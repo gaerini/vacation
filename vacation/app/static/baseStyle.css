@@ -1,0 +1,11 @@
+body {
+    margin: 0;
+}
+
+.main {
+    background-color: bisque;
+    margin-top: 10vh;
+}
+.pagetitle {
+    text-align: center;
+}
