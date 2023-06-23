@@ -5,3 +5,6 @@ Pipfile
 Pipfile.lock
 
 .DS_Store
+
+.pyc
+
