@@ -5,9 +5,173 @@
 <link rel="stylesheet" type="text/css" href="{% static 'homeStyle.css' %}"/>
 {% endblock css %}
 
-{% block conente %}
-<div>
-    
+{% block content %}
+<div class="signinBox">
+    <a href=""><button class="signinBtn">내 계획표 만들기</button></a>
 </div>
-{% endblock conente %}
+<div class="planCircleBox">
+    <canvas id="planCanvas" width="380" height="400"></canvas>
+</div>
+<div class="makePlan">
+    <div class="makePlanBox">
+        <a href=""><button class="makePlanBtn">{{ username }}의 계획표 짜주기</button></a>
+    </div>
+</div>
+<div class="planList">
+    <div class="planListBox">
+        <a href=""><button class="planListBtn">{{ username }}의 계획표 평가하기</button></a>
+    </div>
+</div>
+<script>
+    const canvas = document.getElementById('planCanvas');
+const ctx = canvas.getContext('2d');
+const width = canvas.width;
+const height = canvas.height;
+const centerX = width / 2;
+const centerY = height / 2;
+const radius = Math.min(width, height) * 0.3;
+const hour24 = [
+  { start: 0, end: 15, display: '06' },
+  { start: 15, end: 30, display: '07' },
+  { start: 30, end: 45, display: '08' },
+  { start: 45, end: 60, display: '09' },
+  { start: 60, end: 75, display: '10' },
+  { start: 75, end: 90, display: '11' },
+  { start: 90, end: 105, display: '12' },
+  { start: 105, end: 120, display: '13' },
+  { start: 120, end: 135, display: '14' },
+  { start: 135, end: 150, display: '15' },
+  { start: 150, end: 165, display: '16' },
+  { start: 165, end: 180, display: '17' },
+  { start: 180, end: 195, display: '18' },
+  { start: 195, end: 210, display: '19' },
+  { start: 210, end: 225, display: '20' },
+  { start: 225, end: 240, display: '21' },
+  { start: 240, end: 255, display: '22' },
+  { start: 255, end: 270, display: '23' },
+  { start: 270, end: 285, display: '24' },
+  { start: 285, end: 300, display: '01' },
+  { start: 300, end: 315, display: '02' },
+  { start: 315, end: 330, display: '03' },
+  { start: 330, end: 345, display: '04' },
+  { start: 345, end: 360, display: '05' },
+];
+
+//내부 선
+hour24.forEach(function(data){
+    //내부 실선 표시
+    ctx.save()
+    ctx.beginPath()
+    ctx.strokeStyle='#dfdfdf'
+    ctx.lineWidth = 0.3
+    ctx.moveTo(width/2, height/2)
+    var xx = Math.cos(degreesToRadians(data.end)) * radius + width / 2
+    var yy = Math.sin(degreesToRadians(data.end)) * radius + height / 2
+    ctx.lineTo(xx,yy)
+    ctx.stroke()
+    //텍스트(시간) 표시
+    xx = Math.cos(degreesToRadians(data.end)) * radius*1.2 + width / 2
+    yy = Math.sin(degreesToRadians(data.end)) * radius*1.2 + height / 2
+    var minus = ctx.measureText(data.display).width / 2;
+    ctx.fillText(data.display, xx-minus, yy)  //텍스트의 길이 빼 주기
+    ctx.closePath()       
+    ctx.restore()         
+})
+
+//각도를 라디안으로
+function degreesToRadians(degrees) {
+    const pi = Math.PI
+    return degrees * (pi / 180)
+}
+
+let doubleClickedCnt = 0;
+
+canvas.addEventListener('touchmove', function (event) {
+  var touch = event.touches[0];
+  var x1 = touch.clientX - canvas.parentElement.offsetLeft;
+  var y1 = touch.clientY - canvas.parentElement.offsetTop;
+  
+  // 터치 위치에 따른 부채꼴 영역 인덱스 계산
+  var angle = Math.atan2(y1 - centerY, x1 - centerX);
+  var degree = ((angle * 180 / Math.PI) + 360) % 360;
+
+  // 부채꼴 영역만 배경색 변경
+  for (let i = 0; i < hour24.length; i++) {
+    if (degree >= hour24[i].start && degree < hour24[i].end) {
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY);
+      ctx.arc(centerX, centerY, radius, (Math.PI / 180) * hour24[i].start, (Math.PI / 180) * hour24[i].end, false);
+      ctx.fillStyle = 'blue';
+      ctx.fill();
+      ctx.closePath();
+    }
+  }
+});
+
+canvas.addEventListener('touchstart', function (event) {
+    isUp = true
+    setTimeout(function(){
+        doubleClickedCnt++
+    },100)        
+})
+
+canvas.addEventListener('touchend', function (event) {
+    isUp = false
+    //더블클릭
+    setTimeout(function(){
+        if(doubleClickedCnt > 1){
+            var touch = event.changedTouches[0]
+            var x1 = touch.clientX - canvas.parentElement.offsetLeft
+            var y1 = touch.clientY - canvas.parentElement.offsetTop
+            var inn = isInsideArc(x1, y1)
+            // 여기서 원하는 작업을 수행합니다.
+            
+        }
+        doubleClickedCnt = 0
+    }, 250)    
+})
+
+canvas.addEventListener('mousemove', function(event) {
+  var x1 = event.clientX - event.target.parentElement.offsetLeft;
+  var y1 = event.clientY - event.target.parentElement.offsetTop;
+  var inn = isInsideArc(x1, y1);
+  console.log(inn);
+});
+
+function isInsideArc(x1, y1) {
+  var result = false;
+  var x = width / 2 - x1;
+  var y = height / 2 - y1;
+  var my_len = Math.sqrt(x * x + y * y);
+  if (radius >= my_len) {
+    result = true;
+  }
+  var rad = Math.atan2(y, x);
+  rad = (rad * 180) / Math.PI;
+  rad += 180;
+  return { result: result, degree: rad };
+}
+
+function drawCircle(targets, first, last) {
+  targets.save();
+  targets.beginPath();
+  targets.arc(
+    width / 2,
+    height / 2,
+    radius,
+    (Math.PI / 180) * first,
+    (Math.PI / 180) * last,
+    false
+  );
+  targets.lineWidth = 3;
+  targets.strokeStyle = '#dfdfdf';
+  targets.stroke();
+  targets.closePath();
+  targets.restore();
+}
+
+drawCircle(ctx, 0, 360, true);
+
+</script>
+{% endblock content %}
 
