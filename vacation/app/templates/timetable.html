@@ -11,6 +11,9 @@
 </div>
 <div class="planCircleBox">
     <canvas id="planCanvas" width="380" height="400"></canvas>
+    <input type="text" id="colorsInput" placeholder="항목을 입력하세요">
+    <button id="addButton">추가</button>
+    <select id="colorSelect"></select>
 </div>
 <div class="makePlan">
     <div class="makePlanBox">
@@ -84,6 +87,23 @@ function degreesToRadians(degrees) {
     return degrees * (pi / 180)
 }
 
+// 색상 선택 옵션 생성
+const colorSelect = document.getElementById('colorSelect');
+const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
+colors.forEach(color => {
+  const option = document.createElement('option');
+  option.value = color;
+  option.textContent = color;
+  colorSelect.appendChild(option);
+});
+
+let selectedColor = colors[0]; // 초기 선택된 색상 (예시로 빨강 선택)
+
+// 선택된 색상 변경 시 이벤트 처리
+colorSelect.addEventListener('change', function(event) {
+  selectedColor = event.target.value;
+});
+
 let doubleClickedCnt = 0;
 
 canvas.addEventListener('touchmove', function (event) {
@@ -101,7 +121,7 @@ canvas.addEventListener('touchmove', function (event) {
       ctx.beginPath();
       ctx.moveTo(centerX, centerY);
       ctx.arc(centerX, centerY, radius, (Math.PI / 180) * hour24[i].start, (Math.PI / 180) * hour24[i].end, false);
-      ctx.fillStyle = 'blue';
+      ctx.fillStyle = selectedColor;
       ctx.fill();
       ctx.closePath();
     }
@@ -174,4 +194,3 @@ drawCircle(ctx, 0, 360, true);
 
 </script>
 {% endblock content %}
-
