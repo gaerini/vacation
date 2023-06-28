@@ -23,4 +23,5 @@ urlpatterns = [
     path('personal/<int:timetable_pk>', views.timetable, name="timetable"),
     path('login/', views.login, name="login"),
     path('signup/', views.signup, name="signup"),
+    path('timeblock', views.timeblock, name="timeblock"),
 ]
