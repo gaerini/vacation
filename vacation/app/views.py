@@ -3,13 +3,16 @@ from django.contrib import auth
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from .models import Timetable, Like, Timeblock
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 
+import json
 # Create your views here.
 
 def timetable(request, timetable_pk):
 
     timetable = Timetable.objects.get(pk=timetable_pk)
-    timeblocks = Timeblock.objects.get(timetable_id = timetable_pk)
+    timeblocks = Timeblock.objects.filter(timetable_id = timetable_pk)
     return render(request, "timetable.html", {'timetable': timetable, 'timeblocks': timeblocks})
 
 def login(request):
@@ -45,3 +48,29 @@ def signup(request):
 
         return redirect('timetable', new_timetable.pk)
     return render(request, 'signup.html')
+
+@csrf_exempt
+def timeblock(request):
+    if request.method == 'POST':
+        request_body = json.loads(request.body)
+        timetable_pk = int(request_body['timetable_pk'])
+        timeblock_start = int(request_body['timeblock_start'])
+        timeblock_end = int(request_body['timeblock_end'])
+        detail = request_body['timeblock_detail']
+
+        timetable = Timetable.objects.get(pk=timetable_pk)
+
+        timeblock = Timeblock.objects.create(
+                timetable_id = timetable,
+                starttime = timeblock_start,
+                endtime = timeblock_end,
+                detail = detail,
+        )
+
+
+        timeblocks = Timeblock.objects.filter(timetable_id=timetable_pk)
+        shit = 0
+        response = {
+            'timeblocks': shit,
+        }
+        return HttpResponse(json.dumps(list(response)))

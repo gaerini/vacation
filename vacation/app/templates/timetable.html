@@ -11,7 +11,7 @@
 </div>
 <div class="planCircleBox">
     <canvas id="planCanvas" width="380" height="400"></canvas>
-    <input type="text" id="colorsInput" placeholder="항목을 입력하세요">
+    <input type="text" id="detailInput" placeholder="항목을 입력하세요">
     <button id="addButton">추가</button>
     <select id="colorSelect"></select>
 </div>
@@ -25,8 +25,9 @@
         <a href=""><button class="planListBtn">{{ username }}의 계획표 평가하기</button></a>
     </div>
 </div>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
-    const canvas = document.getElementById('planCanvas');
+const canvas = document.getElementById('planCanvas');
 const ctx = canvas.getContext('2d');
 const width = canvas.width;
 const height = canvas.height;
@@ -105,12 +106,17 @@ colorSelect.addEventListener('change', function(event) {
 });
 
 let doubleClickedCnt = 0;
+const coloredSectors = [];
+var min = 30;
+var max = 0;
 
 canvas.addEventListener('touchmove', function (event) {
   var touch = event.touches[0];
   var x1 = touch.clientX - canvas.parentElement.offsetLeft;
   var y1 = touch.clientY - canvas.parentElement.offsetTop;
   
+  //coloredSectors 초기화
+
   // 터치 위치에 따른 부채꼴 영역 인덱스 계산
   var angle = Math.atan2(y1 - centerY, x1 - centerX);
   var degree = ((angle * 180 / Math.PI) + 360) % 360;
@@ -124,6 +130,7 @@ canvas.addEventListener('touchmove', function (event) {
       ctx.fillStyle = selectedColor;
       ctx.fill();
       ctx.closePath();
+      coloredSectors.push(i);
     }
   }
 });
@@ -137,6 +144,23 @@ canvas.addEventListener('touchstart', function (event) {
 
 canvas.addEventListener('touchend', function (event) {
     isUp = false
+    uniqueSectors = [...new Set(coloredSectors)]
+    uniqueSectors.forEach(function(index) {
+      const sector = hour24[index];
+      console.log('Colored sector:', sector);
+      const temp = parseInt(sector.display)
+      if(temp >= max){
+        max = temp
+      }
+
+      if(temp <= min){
+        min = temp
+      }
+    })
+    console.log(min, max);
+
+    coloredSectors.length = 0;
+
     //더블클릭
     setTimeout(function(){
         if(doubleClickedCnt > 1){
@@ -192,5 +216,24 @@ function drawCircle(targets, first, last) {
 
 drawCircle(ctx, 0, 360, true);
 
+//추가 버튼시 POST
+const addButton = document.querySelector('#addButton');
+const detailInput = document.querySelector('#detailInput').value;
+
+const timeblock = () => {
+  fetch('/timeblock', {
+    method: 'POST',
+    body: JSON.stringify({timetable_pk:"{{timetable.pk}}",
+                          timeblock_start: min,
+                          timeblock_end: max,
+                          timeblock_detail: detailInput}),
+    headers: {
+      "Content-Type": "application/json",
+    },
+
+  })
+    .then((response) => response.json())
+}
+addButton.addEventListener("click", timeblock)
 </script>
 {% endblock content %}
