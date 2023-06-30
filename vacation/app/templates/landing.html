@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'landingStyle.css' %}"/>
+</head>
+<body>
+    <div class="main">
+        <div class="sunimg">
+            <img src="{% static 'sun.png' %}"/>
+        </div>
+        <div class="title">
+            <h2>다시 돌아온 <br/>여름 방학 계획표</h2>
+        </div>
+        <div class="content">
+            <div class="button-container">
+                <a href='http://127.0.0.1:8000/login/'><button class="button friend">친구 방학 계획표 망치러가기~!</button></a>
+            </div>
+            <div class="button-container">
+                <a href='http://127.0.0.1:8000/signup/'><button class="button my">내 방학 계획표 만들기~!</button></a>
+            </div>
+            <div class="manimg">
+                <img class="tree" src="{% static 'tree.png' %}"/>
+                <img class="smileimg" src="{% static 'smile.png' %}"/>
+                <img class="wowimg" src="{% static 'wow.png' %}"/>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

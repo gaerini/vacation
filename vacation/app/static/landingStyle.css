@@ -1,0 +1,81 @@
+@font-face {
+    font-family: 'TTCrownMychewR';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2205@1.0/TTCrownMychewR.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+h2 {
+    margin: 0;
+}
+
+.title {
+
+    font-family: 'TTCrownMychewR';
+    text-align: center;
+    font-size: x-large;
+    font-weight: 700;
+
+}
+
+.main {
+    margin-top: 7vh;
+}
+
+button {
+    font-family: 'TTCrownMychewR';
+    font-size: larger;
+    
+}
+
+.sunimg {
+    height: 80px;
+    width: 80px;
+}
+
+.manimg {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-left: 2vh;
+    padding-right: 8vh;
+    padding-top: 7vh;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+  }
+  
+.button {
+    display: inline-block;
+    background-color: #0575E6;
+    color: white;
+    text-align: center;
+    padding: 14px 20px;
+    margin: 8px 4px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 24px;
+  }
+.friend {
+    margin-top: 12vh;
+  }
+.my {
+    margin-top: 5vh;
+  }
+.tree {
+    height: 200px;
+    width: auto;   
+}
+.smileimg {
+    padding-top: 5vh;
+    height: 60px;
+    width: auto;
+}
+.wowimg {
+    padding-top: 5vh;
+    height: 80px;
+    width: auto;
+}
