@@ -9,6 +9,9 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 # Create your views here.
 
+def landing(request):
+    return render(request, 'landing.html')
+
 def timetable(request, timetable_pk):
 
     timetable = Timetable.objects.get(pk=timetable_pk)
