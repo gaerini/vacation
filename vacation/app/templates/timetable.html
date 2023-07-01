@@ -13,6 +13,7 @@
     <canvas id="planCanvas" width="380" height="400"></canvas>
     <input type="text" id="detailInput" placeholder="항목을 입력하세요">
     <button id="addButton">추가</button>
+    <input type="button" id="indexButton" onclick="showInput()">이벤트 추가</button>
     <select id="colorSelect"></select>
 </div>
 <div class="makePlan">
@@ -35,30 +36,30 @@ const centerX = width / 2;
 const centerY = height / 2;
 const radius = Math.min(width, height) * 0.3;
 const hour24 = [
-  { start: 0, end: 15, display: '06' },
-  { start: 15, end: 30, display: '07' },
-  { start: 30, end: 45, display: '08' },
-  { start: 45, end: 60, display: '09' },
-  { start: 60, end: 75, display: '10' },
-  { start: 75, end: 90, display: '11' },
-  { start: 90, end: 105, display: '12' },
-  { start: 105, end: 120, display: '13' },
-  { start: 120, end: 135, display: '14' },
-  { start: 135, end: 150, display: '15' },
-  { start: 150, end: 165, display: '16' },
-  { start: 165, end: 180, display: '17' },
-  { start: 180, end: 195, display: '18' },
-  { start: 195, end: 210, display: '19' },
-  { start: 210, end: 225, display: '20' },
-  { start: 225, end: 240, display: '21' },
-  { start: 240, end: 255, display: '22' },
-  { start: 255, end: 270, display: '23' },
-  { start: 270, end: 285, display: '24' },
-  { start: 285, end: 300, display: '01' },
-  { start: 300, end: 315, display: '02' },
-  { start: 315, end: 330, display: '03' },
-  { start: 330, end: 345, display: '04' },
-  { start: 345, end: 360, display: '05' },
+  { start: 0, end: 15, display: '07', fillColor: "#808080", index: ''},
+  { start: 15, end: 30, display: '08', fillColor: "#808080", index: ''},
+  { start: 30, end: 45, display: '09', fillColor: "#808080", index: ''},
+  { start: 45, end: 60, display: '10', fillColor: "#808080", index: ''},
+  { start: 60, end: 75, display: '11', fillColor: "#808080", index: ''},
+  { start: 75, end: 90, display: '12', fillColor: "#808080", index: ''},
+  { start: 90, end: 105, display: '13', fillColor: "#808080", index: ''},
+  { start: 105, end: 120, display: '14', fillColor: "#808080", index: ''},
+  { start: 120, end: 135, display: '15', fillColor: "#808080", index: ''},
+  { start: 135, end: 150, display: '16', fillColor: "#808080", index: ''},
+  { start: 150, end: 165, display: '17', fillColor: "#808080", index: ''},
+  { start: 165, end: 180, display: '18', fillColor: "#808080", index: ''},
+  { start: 180, end: 195, display: '19', fillColor: "#808080", index: ''},
+  { start: 195, end: 210, display: '20', fillColor: "#808080", index: ''},
+  { start: 210, end: 225, display: '21', fillColor: "#808080", index: ''},
+  { start: 225, end: 240, display: '22', fillColor: "#808080", index: ''},
+  { start: 240, end: 255, display: '23', fillColor: "#808080", index: ''},
+  { start: 255, end: 270, display: '24', fillColor: "#808080", index: ''},
+  { start: 270, end: 285, display: '01', fillColor: "#808080", index: ''},
+  { start: 285, end: 300, display: '02', fillColor: "#808080", index: ''},
+  { start: 300, end: 315, display: '03', fillColor: "#808080", index: ''},
+  { start: 315, end: 330, display: '04', fillColor: "#808080", index: ''},
+  { start: 330, end: 345, display: '05', fillColor: "#808080", index: ''},
+  { start: 345, end: 360, display: '06', fillColor: "#808080", index: ''},
 ];
 
 //내부 선
@@ -82,6 +83,17 @@ hour24.forEach(function(data){
     ctx.restore()         
 })
 
+//기존 데이터 영역 칠하기
+hour24.forEach(function(data) {
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY);
+    ctx.arc(centerX, centerY, radius, (Math.PI / 180) * data.start, (Math.PI / 180) * data.end, false);
+    ctx.fillStyle = data.fillColor;
+    ctx.fill();
+    ctx.closePath();
+  });
+
+
 //각도를 라디안으로
 function degreesToRadians(degrees) {
     const pi = Math.PI
@@ -90,19 +102,43 @@ function degreesToRadians(degrees) {
 
 // 색상 선택 옵션 생성
 const colorSelect = document.getElementById('colorSelect');
-const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
-colors.forEach(color => {
+const colorAndDetail = [{detail: '', color: '#ff0000'},
+                {detail: '', color: '#ff8c00'},
+                {detail: '', color: '#ffff00'},
+                {detail: '', color: '#008000'},
+                {detail: '', color: '#0000ff'},
+                {detail: '', color: '#4b0082'},
+                {detail: '', color: '#800080'}];
+colorAndDetail.forEach(obj => {
   const option = document.createElement('option');
-  option.value = color;
-  option.textContent = color;
+  option.value = obj.color;
+  option.textContent = obj.color;
   colorSelect.appendChild(option);
 });
 
-let selectedColor = colors[0]; // 초기 선택된 색상 (예시로 빨강 선택)
-
+var initDetail = prompt('첫 계획이 뭔지 써주세용');
+colorAndDetail[0].detail = initDetail;
+let selectedColor = colorAndDetail[0].color; // 초기 선택된 색상 (예시로 빨강 선택)
+let selectedDetail = colorAndDetail[0].detail;
 // 선택된 색상 변경 시 이벤트 처리
 colorSelect.addEventListener('change', function(event) {
-  selectedColor = event.target.value;
+  colorAndDetail.forEach(function(obj){
+    if (event.target.value == obj.color){
+      if(obj.detail == ''){
+        const initDetail = prompt('어떤 계획을 적어줄지 입력해주세요');
+        obj.detail = initDetail;
+        selectedColor = obj.color;
+        selectedDetail = obj.detail;
+      }
+
+      else {
+        selectedColor = obj.color;
+        selectedDetail = obj.detail;
+      }
+    } 
+    
+  })
+
 });
 
 let doubleClickedCnt = 0;
@@ -124,15 +160,21 @@ canvas.addEventListener('touchmove', function (event) {
   // 부채꼴 영역만 배경색 변경
   for (let i = 0; i < hour24.length; i++) {
     if (degree >= hour24[i].start && degree < hour24[i].end) {
+      hour24[i].index = selectedDetail;
+      hour24[i].fillColor = selectedColor;
       ctx.beginPath();
       ctx.moveTo(centerX, centerY);
       ctx.arc(centerX, centerY, radius, (Math.PI / 180) * hour24[i].start, (Math.PI / 180) * hour24[i].end, false);
       ctx.fillStyle = selectedColor;
       ctx.fill();
+      
       ctx.closePath();
       coloredSectors.push(i);
+      
     }
+    
   }
+
 });
 
 canvas.addEventListener('touchstart', function (event) {
@@ -172,7 +214,8 @@ canvas.addEventListener('touchend', function (event) {
             
         }
         doubleClickedCnt = 0
-    }, 250)    
+    }, 250)
+    const detailText = textMaker();
 })
 
 canvas.addEventListener('mousemove', function(event) {
@@ -216,7 +259,56 @@ function drawCircle(targets, first, last) {
 
 drawCircle(ctx, 0, 360, true);
 
+function textMaker(){
+  var copyArr = Object.assign([], hour24)  //배열 복사
+  var summery = []
+  var eq = ''
+  var start = -1
+  var colors = ''
+  copyArr.forEach(function(data, idx){
+      if(idx == 0){  //가장 처음이면
+          eq = data.index
+          start = data.start
+          colors = data.fillColor
+      } else if(eq != data.index){   //인덱스가 다르면             
+          summery.push({start : start, end : data.start, index : eq, fillColor: colors})
+          eq = data.index
+          start = data.start
+          colors =  data.fillColor
+          if(idx == copyArr.length-1){  //인덱스가 다르면서 마지막이면
+              summery.push({start : start, end : data.end, index : eq, fillColor: data.fillColor})
+          }                
+      } else if(idx == copyArr.length-1){ //마지막이면
+          summery.push({start : start, end : data.start, index : eq, filledColor: data.filledColor})
+      }
+  })
 
+  var lastCheck = summery[0]
+  var lastCheck2 = summery[summery.length-1]
+  
+  if(lastCheck.index == lastCheck2.index) {  //마지막 스타트가 처음 스타트로 오도록 변경 합니다.
+      summery[0].start = lastCheck2.start
+      summery.pop()
+  }      
+  console.log(summery);
+  summery.forEach(function(data){
+      if(data.index != ''){  //스케줄이 등록된 경우만 그리게 합니다.
+          var half = Math.abs(data.end - data.start) / 2  //부채꼴 크기의 절반입니다.
+          
+          if(data.start > data.end ){ //마지막 각도가 0도가 넘어간 경우 입니다.
+              half = (360-data.start + data.end) / 2
+          }
+          var degg = data.start + half;
+          var xx = Math.cos(degreesToRadians(degg)) * radius * 0.7 + width / 2;
+          var yy = Math.sin(degreesToRadians(degg)) * radius * 0.7 + height / 2;
+          ctx.save()
+          ctx.beginPath()
+          ctx.fillStyle = 'white'
+          ctx.fillText(data.index, xx, yy)
+          ctx.restore()
+      }
+  })           
+}
 </script>
 {%load static%}
 <script src={% static "./js/timetable.js"%}></script>
