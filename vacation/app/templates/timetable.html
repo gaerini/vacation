@@ -2,7 +2,7 @@
 
 {% block css %}
 {% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'homeStyle.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'timetableStyle.css' %}"/>
 {% endblock css %}
 
 {% block content %}
@@ -24,6 +24,19 @@
     <div class="planListBox">
         <a href=""><button class="planListBtn">{{ username }}의 계획표 평가하기</button></a>
     </div>
+</div>
+<div class="modal hidden">
+  <div class="modal_content">
+    <div class="modal_box">
+      <h2>계획표가 추가되었습니다!</h2>
+      <img src=""/>
+      <p>다른 친구들이 망친 {{ username }} 계획표도 보러갈까요~?</p>
+      <a href="" >👉 망친 계획표 보러가기</a>
+      <p><a href="" >👉 내 계획표 만들러가기</a></p>
+      <button class="close">❌</button>
+    </div>
+  </div>
+  <div class="modal-overlay"></div>
 </div>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
@@ -216,6 +229,22 @@ function drawCircle(targets, first, last) {
 
 drawCircle(ctx, 0, 360, true);
 
+/*modal입니다~~*/
+const addButton = document.getElementById('addButton');
+addButton.addEventListener('click', showModal);
+
+function showModal() {
+  const modal = document.querySelector('.modal');
+  modal.classList.remove('hidden');
+}
+
+const closeButton = document.querySelector('.close');
+closeButton.addEventListener('click', closeModal);
+
+function closeModal() {
+  const modal = document.querySelector('.modal');
+  modal.classList.add('hidden');
+}
 
 </script>
 {%load static%}
