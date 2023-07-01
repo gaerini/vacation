@@ -12,11 +12,12 @@
 </head>
 <body>
     <div class="main">
-        <header>
-            <div class="title">
-                <h2 class="pagetitle">{{ username }}의 여름 방학을 부탁해~</h2>
-            </div>
-        </header>
+        <div class="sunimg">
+            <img src="{% static 'sun.png' %}"/>
+        </div>
+        <div class="title">
+            <h2>다시 돌아온 <br/>여름 방학 계획표</h2>
+        </div>
         <div class="content">
             {% block content %}
 
