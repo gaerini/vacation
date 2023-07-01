@@ -74,6 +74,6 @@ def timeblock(request):
         timeblocks = Timeblock.objects.filter(timetable_id=timetable_pk)
         shit = 0
         response = {
-            'timeblocks': shit,
+            
         }
         return HttpResponse(json.dumps(list(response)))
