@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block css %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'listStyle.css' %}"/>
+{% endblock css %}
+
+{% block content %}
+{% for table in {{ tablelists }}%}
+    <div class="box">
+        <div class="imgbox">{{ table.timetable_image }}</div>
+        <div class="likebox">
+            <span><img src=""/> X {{ table.like }}</span>
+        </div>
+    </div>
+{% endfor %}
+{% endblock content %}

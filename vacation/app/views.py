@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import auth
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from .models import Timetable, Like, Timeblock
+from .models import Timetable, Like, Timeblock, Tablelist
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
@@ -17,6 +17,13 @@ def timetable(request, timetable_pk):
     timetable = Timetable.objects.get(pk=timetable_pk)
     timeblocks = Timeblock.objects.filter(timetable_id = timetable_pk)
     return render(request, "timetable.html", {'timetable': timetable, 'timeblocks': timeblocks})
+
+def tablelist(request, timetable_pk):
+    
+    timetable = Timetable.objects.get(pk=timetable_pk)
+    tablelists = Tablelist.objects.filter(timetable_id = timetable)
+
+    return render(request, "tablelist.html", {'tablelists' : tablelists})
 
 def login(request):
     if request.method == 'POST':

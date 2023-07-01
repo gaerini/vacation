@@ -2,7 +2,7 @@
 
 {% block css %}
 {% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'homeStyle.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'timetableStyle.css' %}"/>
 {% endblock css %}
 
 {% block content %}
@@ -11,7 +11,6 @@
 </div>
 <div class="planCircleBox">
     <canvas id="planCanvas" width="380" height="400"></canvas>
-    <input type="text" id="detailInput" placeholder="항목을 입력하세요">
     <button id="addButton">추가</button>
     <input type="button" id="indexButton" onclick="showInput()">이벤트 추가</button>
     <select id="colorSelect"></select>
@@ -25,6 +24,19 @@
     <div class="planListBox">
         <a href=""><button class="planListBtn">{{ username }}의 계획표 평가하기</button></a>
     </div>
+</div>
+<div class="modal hidden">
+  <div class="modal_content">
+    <div class="modal_box">
+      <h2>계획표가 추가되었습니다!</h2>
+      <img src=""/>
+      <p>다른 친구들이 망친 {{ username }} 계획표도 보러갈까요~?</p>
+      <a href="http://127.0.0.1:8000/tablelist/{{ timetable.pk }}" >👉 망친 계획표들 보러가기</a>
+      <p><a href="" >👉 내 계획표 만들러가기</a></p>
+      <button class="close">❌</button>
+    </div>
+  </div>
+  <div class="modal-overlay"></div>
 </div>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
@@ -309,6 +321,23 @@ function textMaker(){
       }
   })           
 }
+/*modal입니다~~*/
+const addButton = document.getElementById('addButton');
+addButton.addEventListener('click', showModal);
+
+function showModal() {
+  const modal = document.querySelector('.modal');
+  modal.classList.remove('hidden');
+}
+
+const closeButton = document.querySelector('.close');
+closeButton.addEventListener('click', closeModal);
+
+function closeModal() {
+  const modal = document.querySelector('.modal');
+  modal.classList.add('hidden');
+}
+
 </script>
 {%load static%}
 <script src={% static "./js/timetable.js"%}></script>

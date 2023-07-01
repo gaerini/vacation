@@ -1,5 +1,4 @@
-//추가 버튼시 POST
-const addButton = document.querySelector('#addButton');
+
 
 const indexButton = document.querySelector('#indexButton');
 
