@@ -2,7 +2,7 @@
 
 {% block css %}
 {% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'baseStyle.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'loginStyle.css' %}"/>
 {% endblock css %}
 
 {% block content %}
@@ -19,8 +19,8 @@
             <input type='text' name='pw'>
         </div>
         <div class='loginBtn'>
-            <button type='submit'>로그인</button>
-            <a href='http://127.0.0.1:8000/signup/'>회원가입</a>
+            <button type='submit' class="button">로그인</button>
+            <a href='http://127.0.0.1:8000/signup/'>1초 걸리는 ID만들기</a>
         </div>
     </form>
 </div>
